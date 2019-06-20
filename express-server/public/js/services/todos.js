@@ -1,3 +1,5 @@
+import { transcode } from "buffer";
+
 angular.module('todoService', [])
 
 	// super simple service
@@ -12,6 +14,9 @@ angular.module('todoService', [])
 			},
 			delete: function (id) {
 				return $http.delete('/api/todos/' + id);
+			},
+			register:function(){
+				return $http.post("/register",user);
 			}
 		}
 	}]);

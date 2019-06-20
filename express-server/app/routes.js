@@ -11,18 +11,16 @@ function getTodos(res) {
         res.json(todos); // return all todos in JSON format
     });
 };
-// 条件查询,通过用户名来查询
-function getAccount(account,res){
+
+
+// 条件查询,通过用户名来单一查询
+function getAccount(account){
     var whereStr={"account":account};
-    Todo.find(whereStr,function(err,todos){
-        if(err){
-            res.send(err);
-        }
-        res.json(todos);
-    })
+    return Todo.findOne(whereStr)
+
 }
 
-//更新存款
+//更新存款,通过账户名来更新
 function updateBalance(account,balance){
     var whereStr={"account":account};
     var set={$set:{"balance":balance}};
@@ -36,26 +34,8 @@ module.exports = function (app) {
         // use mongoose to get all todos in the database
         getTodos(res);
     });
-
-    // create todo and send back all todos after creation
-    app.post('/api/todos', function (req, res) {
-
-        // 注册
-        if((req.body.name!=undefined)&&(req.body.account!=undefined)&&(req.body.password!=undefined)){
-        Todo.create({
-            account: req.body.account,
-            password: req.body.password,
-            name:req.body.name,
-            done: false
-        }, function (err, todo) {
-            if (err)
-                res.send(err);
-
-            // get and return all the todos after you create another
-            getTodos(res);
-        });}
-        //转账
-        else if((req.body.trans_money!=undefined)&&(req.body.trans_account!=undefined)){
+    //转账
+    app.post("/transfer",function(req,res){
             //updateBalance(req.body.account,req.body.balance);
             updateBalance(req.body.account,req.body.balance);
             var result={"account":req.body.trans_account};
@@ -66,31 +46,27 @@ module.exports = function (app) {
             });
             getAccount(req.body.account,res);
        
-        }
-        else if((req.body.account!=undefined)&&(req.body.password!=undefined)){
-            getAccount(req.body.account,res);
-        }
-        else if((req.body.balance!=undefined)&&(req.body.account!=undefined)){
-            updateBalance(req.body.account,req.body.balance);
-            getAccount(req.body.account,res);
-        }
-
-    });
-
-    // delete a todo
-    app.delete('/api/todos/:todo_id', function (req, res) {
-        Todo.remove({
-            _id: req.params.todo_id
-        }, function (err, todo) {
-            if (err)
-                res.send(err);
-
-            getTodos(res);
+        })
+    //注册
+    app.post("/register",function(req,res){
+        Todo.create({
+            account: req.body.account,
+            password: req.body.password,
+            name:req.body.username,
         });
-    });
+        res.json({msg:注册成功});
+    })
+    //登录
+    app.post("/login",function(req,res){
 
-    // application -------------------------------------------------------------
-    app.get('*', function (req, res) {
-        res.sendFile(__dirname + '/public/index.html'); // load the single view file (angular will handle the page changes on the front-end)
-    });
+    })
+    //存钱
+    app.post("/deposit",function(req,res){
+
+    })
+    //取钱
+    app.post("/withdrwa",function(req,res){
+
+    })
+
 };

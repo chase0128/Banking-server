@@ -50,12 +50,13 @@ angular.module('todoController', [])
 				$scope.loading = true;
 
 				// call the create function from our service (returns a promise object)
-				Todos.create($scope.user)
+				Todos.register($scope.user)
 
 					// if successful creation, call our get function to get all the new todos
 					.success(function(data) {
 						$scope.loading = false;
 						$scope.user = {}; // clear the form so our user is ready to enter another
+						alert(data.msg);
 					});
 
 
