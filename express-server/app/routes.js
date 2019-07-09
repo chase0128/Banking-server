@@ -49,12 +49,14 @@ module.exports = function (app) {
         })
     //注册
     app.post("/register",function(req,res){
+	console.log(req.body);
         Todo.create({
             account: req.body.account,
             password: req.body.password,
             name:req.body.username,
-        });
-        res.json({msg:注册成功});
+        },function(){
+        res.send({msg:"注册成功"});
+	});
     })
     //登录
     app.post("/login",function(req,res){
